@@ -6,7 +6,6 @@ const userSchema = new mongoose.Schema(
       require: true,
       unique: true,
     },
-
     gmail: {
       type: String,
       require: true,

@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { config } from "dotenv";
-import { DB_Name } from "../utils/constant.js";
+import { DB_Name } from "../constant.js";
 config();
 // console.log(process.env);
 

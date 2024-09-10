@@ -13,15 +13,23 @@ const registerUser = asyncHandler(async (req, res) => {
   if (password === "") throw new ApiError(400, "password is required");
   if (Name === "") throw new ApiError(400, "name is required");
   if (gmail === "") throw new ApiError(400, "email is required");
-  const existedUser = User.findOne({ gmail });
+  const existedUser = await User.findOne({ gmail });
   if (existedUser)
     throw new ApiError(409, "user is already existed with this email Id");
   const avatarLocalPath = req.files?.avatar[0]?.path;
-  const coverImagePath = req.files?.coverImage[0]?.path;
+  // const coverImagePath = req.files?.coverImage[0]?.path;
+  let coverImagePath;
+  if (
+    req.files &&
+    Array.isArray(req.files.coverImage) &&
+    req.files.coverImage.length > 0
+  ) {
+    coverImagePath = req.files.coverImage[0].path;
+  }
   if (!avatarLocalPath) {
     throw new ApiError(400, "Avatar file is required");
   }
-
+  console.log(req.files);
   const avatar = await uploadOnCloudinary(avatarLocalPath);
   const coverImage = await uploadOnCloudinary(coverImagePath);
   if (!avatar) {

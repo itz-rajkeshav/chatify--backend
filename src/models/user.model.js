@@ -23,6 +23,9 @@ const userSchema = new mongoose.Schema(
     coverImage: {
       type: String,
     },
+    refreshToken: {
+      type: String,
+    },
   },
   { timestamps: true }
 );

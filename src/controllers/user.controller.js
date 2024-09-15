@@ -3,20 +3,20 @@ import { ApiError } from "../utils//ApiError.js";
 import { User } from "../models/user.model.js";
 import { uploadOnCloudinary } from "../utils/cloudnary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
-
 const generateAccessandRefreshToken = async (userId) => {
   try {
     //find user according to the id
     const user = await User.findById(userId);
     // generate access and refresh token
-    const accessToken = user.generateAccessToken();
-    const refreshToken = user.generateRefreshToken();
+    const accessToken = await user.generateAccessToken();
+    const refreshToken = await user.generateRefreshToken();
     //save refresh token in the database
     user.refreshToken = refreshToken;
     await user.save({ validateBeforeSave: false });
     // return also
     return { accessToken, refreshToken };
   } catch (error) {
+    console.log(error);
     throw new ApiError(
       500,
       "Something went wrong while generating refresh and access token"
@@ -68,6 +68,7 @@ const registerUser = asyncHandler(async (req, res) => {
     avatar: avatar.url,
     coverImage: coverImage?.url || "",
     gmail,
+    password,
   });
   const createdUser = await User.findById(user._id).select("-password");
   if (!createdUser) {
@@ -80,7 +81,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
 //after register we check login
 
-const loginUser = asyncHandler(async (res, req) => {
+const loginUser = asyncHandler(async (req, res) => {
   //we check through the gmail and the password
   // here we take both fields from registter user
   const { gmail, password } = req.body;
@@ -113,7 +114,7 @@ const loginUser = asyncHandler(async (res, req) => {
   return res
     .status(200)
     .cookie("accessToken", accessToken, options)
-    .options("refreshToken", refreshToken, options)
+    .cookie("refreshToken", refreshToken, options)
     .json(
       new ApiResponse(
         200,
@@ -123,6 +124,27 @@ const loginUser = asyncHandler(async (res, req) => {
     );
 });
 
-const loggedOutUser = asyncHandler(async (res, req) => {});
+const loggedOutUser = asyncHandler(async (req, res) => {
+  await User.findByIdAndUpdate(
+    req.user._id,
+    {
+      $set: {
+        refreshToken: undefined,
+      },
+    },
+    {
+      new: true,
+    }
+  );
+  const options = {
+    httpOnly: true,
+    secure: true,
+  };
+  return res
+    .status(200)
+    .clearCookie("accessToken", options)
+    .clearCookie("refreshToken", options)
+    .json(new ApiResponse(200, {}, "User looged out successfully"));
+});
 
 export { registerUser, loginUser, loggedOutUser };

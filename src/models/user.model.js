@@ -1,26 +1,29 @@
 import mongoose from "mongoose";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 const userSchema = new mongoose.Schema(
   {
     Name: {
       type: String,
-      require: true,
+      required: true,
       unique: true,
     },
     gmail: {
       type: String,
-      require: true,
+      required: true,
       unique: true,
     },
     password: {
       type: String,
-      require: [true, "password must be required"],
+      required: [true, "password must be required"],
     },
     avatar: {
       //coludinary
       type: String,
-      require: true,
+      required: true,
     },
     coverImage: {
+      //cloudinary
       type: String,
     },
     refreshToken: {
@@ -31,14 +34,14 @@ const userSchema = new mongoose.Schema(
 );
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
-  this.password = await bcrypt.harsh(this.password, 10);
+  this.password = await bcrypt.hash(this.password, 10);
   next();
 });
 userSchema.methods.generateAccessToken = function () {
   return jwt.sign(
     {
       _id: this.id,
-      email: this.email,
+      email: this.gmail, // currently changing the email -> gmail
       Name: this.Name,
     },
     process.env.ACCESS_TOKEN_SECRET,
@@ -59,6 +62,13 @@ userSchema.methods.generateRefreshToken = function () {
   );
 };
 userSchema.methods.isPasswordCorrect = async function (password) {
+  console.log(password, this);
+  if (!password) {
+    throw new Error("Password not provided");
+  }
+  if (!this.password) {
+    throw new Error("Stored password hash is missing");
+  }
   return await bcrypt.compare(password, this.password);
 };
 export const User = mongoose.model("User", userSchema);

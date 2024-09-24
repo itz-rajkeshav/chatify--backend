@@ -3,8 +3,7 @@ import { ApiError } from "../utils//ApiError.js";
 import { User } from "../models/user.model.js";
 import { uploadOnCloudinary } from "../utils/cloudnary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
-import { jwt } from "jsonwebtoken ";
-import { JsonWebTokenError } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 const generateAccessandRefreshToken = async (userId) => {
   try {
     //find user according to the id
@@ -45,6 +44,7 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new ApiError(409, "user is already existed with this email Id");
   // here we all the stuffs regarding imgaes that we take at the time of the register
   const avatarLocalPath = req.files?.avatar[0]?.path;
+  // const avatarLocalPath = req.files.avatar?.[0];
   // const coverImagePath = req.files?.coverImage[0]?.path;
   let coverImagePath;
   if (
@@ -57,7 +57,7 @@ const registerUser = asyncHandler(async (req, res) => {
   if (!avatarLocalPath) {
     throw new ApiError(400, "Avatar file is required");
   }
-  console.log(req.files);
+  // console.log(req.files);
   //here we upload the pic in the cloudinary
   const avatar = await uploadOnCloudinary(avatarLocalPath);
   const coverImage = await uploadOnCloudinary(coverImagePath);

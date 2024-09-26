@@ -31,17 +31,27 @@ const registerUser = asyncHandler(async (req, res) => {
   //   message: "ok",
   // });
   // here we take data from the user
-  const { Name, gmail, password } = req.body;
-  console.log("email", gmail);
+  const { Name, gmail, password, userName } = req.body;
+  console.log("userName", userName);
   console.log("password", password);
   //check all the params
   if (password === "") throw new ApiError(400, "password is required");
   if (Name === "") throw new ApiError(400, "name is required");
   if (gmail === "") throw new ApiError(400, "email is required");
+  if (userName === "") throw new ApiError(400, "userName is required");
+
   // at the time of the register we check if user is  already register before or not
   const existedUser = await User.findOne({ gmail });
   if (existedUser)
     throw new ApiError(409, "user is already existed with this email Id");
+  //also we check the username
+  const existedUsername = await User.findOne({ userName });
+  if (existedUsername) {
+    throw new ApiError(
+      409,
+      `user is already exist with this ${userName} try different username `
+    );
+  }
   // here we all the stuffs regarding imgaes that we take at the time of the register
   const avatarLocalPath = req.files?.avatar[0]?.path;
   // const avatarLocalPath = req.files.avatar?.[0];
@@ -71,6 +81,7 @@ const registerUser = asyncHandler(async (req, res) => {
     coverImage: coverImage?.url || "",
     gmail,
     password,
+    userName,
   });
   const createdUser = await User.findById(user._id).select("-password");
   if (!createdUser) {
@@ -86,12 +97,14 @@ const registerUser = asyncHandler(async (req, res) => {
 const loginUser = asyncHandler(async (req, res) => {
   //we check through the gmail and the password
   // here we take both fields from registter user
-  const { gmail, password } = req.body;
-  if (!gmail) {
-    throw new ApiError(400, "gmail is required");
+  const { userName, password } = req.body;
+  // console.log("Request body:", req.body);
+  // console.log("Content-Type:", req.get("Content-Type"));
+  if (!userName) {
+    throw new ApiError(400, "userName is required");
   }
-  // we find the gmail in the db
-  const user = await User.findOne({ gmail });
+  // we find the username in the db
+  const user = await User.findOne({ userName });
   if (!user) {
     throw new ApiError(400, "User does not exist");
   }

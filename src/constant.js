@@ -1,1 +1,2 @@
-export const DB_Name = "Chatify";
+const DB_Name = "Chatify";
+export { DB_Name };

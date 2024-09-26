@@ -1,9 +1,8 @@
 import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
-// import router from "./routes/user.routes";
-// import userRouter from "./routes/user.routes";
 import userRoutes from "./routes/user.routes.js";
+import { registerMessage } from "./controllers/message.controller.js";
 const app = express();
 app.use(
   cors({
@@ -18,4 +17,6 @@ app.use(cookieParser());
 
 //routes decleration
 app.use("/api/v1/users", userRoutes);
+app.use("/api/v1/users", registerMessage);
+
 export { app };

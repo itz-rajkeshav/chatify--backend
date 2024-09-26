@@ -17,6 +17,11 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true, "password must be required"],
     },
+    userName: {
+      type: String,
+      required: true,
+      unique: true,
+    },
     avatar: {
       //coludinary
       type: String,
@@ -41,7 +46,8 @@ userSchema.methods.generateAccessToken = function () {
   return jwt.sign(
     {
       _id: this.id,
-      email: this.gmail, // currently changing the email -> gmail
+      userName: this.userName,
+      gmail: this.gmail,
       Name: this.Name,
     },
     process.env.ACCESS_TOKEN_SECRET,

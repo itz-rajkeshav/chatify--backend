@@ -54,8 +54,6 @@ const registerUser = asyncHandler(async (req, res) => {
   }
   // here we all the stuffs regarding imgaes that we take at the time of the register
   const avatarLocalPath = req.files?.avatar[0]?.path;
-  // const avatarLocalPath = req.files.avatar?.[0];
-  // const coverImagePath = req.files?.coverImage[0]?.path;
   let coverImagePath;
   if (
     req.files &&

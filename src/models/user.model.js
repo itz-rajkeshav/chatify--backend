@@ -42,13 +42,11 @@ userSchema.pre("save", async function (next) {
   this.password = await bcrypt.hash(this.password, 10);
   next();
 });
+// means we will encoded the user information in the access token
 userSchema.methods.generateAccessToken = function () {
   return jwt.sign(
     {
       _id: this.id,
-      userName: this.userName,
-      gmail: this.gmail,
-      Name: this.Name,
     },
     process.env.ACCESS_TOKEN_SECRET,
     {

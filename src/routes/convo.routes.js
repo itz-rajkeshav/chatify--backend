@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { ConvoMember } from "../controllers/convo.controller.js";
+import { CreateConvo } from "../controllers/convo.controller.js";
 const router = Router();
-router.route("/").post(ConvoMember);
+router.route("/").post(CreateConvo);
 export default router;

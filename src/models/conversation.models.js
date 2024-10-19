@@ -3,16 +3,14 @@ const convoschema = new mongoose.Schema(
   {
     ConvoType: {
       type: String,
-      default: "One to One",
+      default: "Single",
     },
-    ConvoStartUser: {
-      type: String,
+    startUserId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
       required: true,
     },
-    ReceivedUser: {
-      type: String,
-      required: true,
-    },
+    userData: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   },
   { timestamps: true }
 );

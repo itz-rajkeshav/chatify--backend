@@ -13,6 +13,17 @@ const CreateConvo = asyncHandler(async (req, res) => {
       );
   }
   try {
+    const existingConvo = await ConvoUser.findOne({
+      userData: { $all: [ConvoStartUser, ReceivedUser] },
+    }).populate("userData");
+
+    if (existingConvo) {
+      return res
+        .status(200)
+        .json(
+          new ApiResponse(200, "Conversation already exists", existingConvo)
+        );
+    }
     const newConvo = new ConvoUser({
       startUserId: ConvoStartUser,
       userData: [ConvoStartUser, ReceivedUser],
@@ -24,11 +35,11 @@ const CreateConvo = asyncHandler(async (req, res) => {
       .populate("userData")
       .exec();
 
-    return res
-      .status(201)
-      .json(
-        new ApiResponse(201, "Conversation member registered", populatedConvo)
-      );
+    return res.status(201).json({
+      status: 201,
+      message: "Conversation member registered",
+      data: populatedConvo,
+    });
   } catch (error) {
     console.error(error);
     return res

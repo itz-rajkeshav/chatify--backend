@@ -7,7 +7,8 @@ import profileRoute from "./routes/profile.routes.js";
 import _logger from "pino-http";
 import searchRoute from "./routes/search.routes.js";
 import ConvoMemberRoute from "./routes/convo.routes.js";
-
+import Allconversation from "./routes/allConvo.routes.js";
+import getProfile from "./routes/getProfile.routes.js";
 const logger = _logger();
 const app = express();
 app.use(
@@ -27,4 +28,6 @@ app.use("/api/v1/users", registerMessage);
 app.use("/api/v1/profile", profileRoute);
 app.use("/api/v1/search", searchRoute);
 app.use("/api/v1/convoMember", ConvoMemberRoute);
+app.use("/api/v1/allConvo", Allconversation);
+app.use("/api/v1/getProfile", getProfile);
 export { app };

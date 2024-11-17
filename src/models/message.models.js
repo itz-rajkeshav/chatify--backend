@@ -1,17 +1,21 @@
 import mongoose from "mongoose";
 const messageSchema = new mongoose.Schema(
   {
-    senderName: {
-      type: String,
-      required: true,
-    },
-    receiverName: {
-      type: String,
-      required: true,
-    },
     message: {
       type: String,
       required: true,
+    },
+    sender: {
+      type: String,
+      required: true,
+    },
+    receiver: {
+      type: String,
+      required: true,
+    },
+    convoId:{
+      type:String,
+      required:true,
     },
     isDeleted: {
       type: Boolean,

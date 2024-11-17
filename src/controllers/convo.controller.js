@@ -33,10 +33,9 @@ const CreateConvo = asyncHandler(async (req, res) => {
 
     const populatedConvo = await ConvoUser.findById(savedConvo._id)
       .populate("userData")
+      .select("-refreshToken -password")
       .exec();
-
     return res.status(201).json(new ApiResponse(
-
       201,
       "Conversation member registered",
       populatedConvo,

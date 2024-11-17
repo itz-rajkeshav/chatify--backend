@@ -9,8 +9,20 @@ import searchRoute from "./routes/search.routes.js";
 import ConvoMemberRoute from "./routes/convo.routes.js";
 import Allconversation from "./routes/allConvo.routes.js";
 import getProfile from "./routes/getProfile.routes.js";
+import getMessage from "./routes/getMessage.routes.js"
+import { createServer } from 'http';
+import { Server } from 'socket.io';
+import dotenv from 'dotenv';
+dotenv.config();
 const logger = _logger();
 const app = express();
+const server = createServer(app);
+const io = new Server(server, {
+    cors: {
+        origin: process.env.CORS_ORIGIN||'http://localhost:3000', 
+        methods: ['GET', 'POST'],
+    },
+});
 app.use(
   cors({
     origin: process.env.CORS_ORIGIN,
@@ -30,4 +42,15 @@ app.use("/api/v1/search", searchRoute);
 app.use("/api/v1/convoMember", ConvoMemberRoute);
 app.use("/api/v1/allConvo", Allconversation);
 app.use("/api/v1/getProfile", getProfile);
-export { app };
+app.use("/api/v1/getMessages",getMessage);
+io.on('connection', (socket) => {
+  console.log(`User connected: ${socket.id}`);
+  socket.on('sendMessage', (message) => {
+    console.log('Message received:', message);
+    io.emit('receiveMessage', message); 
+});
+socket.on('disconnect', () => {
+    console.log(`User disconnected: ${socket.id}`);
+});
+});
+export { server };

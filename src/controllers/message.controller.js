@@ -5,16 +5,16 @@ import { ApiError } from "../utils/ApiError.js";
 
 const registerMessage = asyncHandler(async (req, res) => {
   try {
-    const { senderName, receiverName, message, isDeleted } = req.body;
-    console.log(senderName, receiverName, message, isDeleted);
+    const { message,sender,receiver,convoId,isDeleted } = req.body;
+    console.log(message,sender,receiver,convoId,isDeleted);
     const newMessage = new Message({
-      senderName,
-      receiverName,
       message,
+      sender,
+      receiver,
+      convoId,
       isDeleted: isDeleted || false,
     });
     await newMessage.save();
-    // console.log(newMessage);
     return res
       .status(201)
       .json(new ApiResponse(200, "Message saved successfully", newMessage));

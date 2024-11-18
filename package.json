@@ -8,7 +8,7 @@
     "dev": " nodemon dotenv/config --experimental-json-modules src/server.js ",
     "build": "vite build",
     "lint": "eslint .",
-    "start": "server.js",
+    "start": "node src/server.js",
     "preview": "vite preview"
   },
   "dependencies": {

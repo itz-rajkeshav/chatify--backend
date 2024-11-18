@@ -35,6 +35,7 @@ app.use(express.static("public"));
 app.use(cookieParser());
 // app.use(logger);
 //routes decleration
+app.get("/",(req,res)=>res.json({status:"online"}))
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/users", registerMessage);
 app.use("/api/v1/profile", profileRoute);

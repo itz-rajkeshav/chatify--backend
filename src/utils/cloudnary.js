@@ -60,7 +60,7 @@ cloudinary.config({
       );
 
       // Convert buffer to stream and pipe to cloudinary
-      const bufferStream = require('stream').Readable.from(fileBuffer);
+      const bufferStream = Readable.from(fileBuffer);
       bufferStream.pipe(uploadStream);
     });
   } catch (error) {

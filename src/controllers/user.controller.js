@@ -24,19 +24,19 @@ const generateAccessandRefreshToken = async (userId) => {
     );
   }
 };
-const ensureUploadDirectory = async () => {
-  const uploadDir = path.join(process.cwd(), 'public', 'storage');
-  try {
-    await fs.access(uploadDir);
-  } catch (error) {
-    await fs.mkdir(uploadDir, { recursive: true });
-  }
-  return uploadDir;
-};
+// const ensureUploadDirectory = async () => {
+//   const uploadDir = path.join(process.cwd(), 'public', 'storage');
+//   try {
+//     await fs.access(uploadDir);
+//   } catch (error) {
+//     await fs.mkdir(uploadDir, { recursive: true });
+//   }
+//   return uploadDir;
+// };
 
 // here we add the register
 const registerUser = asyncHandler(async (req, res) => {
-  await ensureUploadDirectory();
+  // await ensureUploadDirectory();
   // here we take data from the user
   const { Name, gmail, password, userName } = req.body;
   console.log("userName", userName);
@@ -111,7 +111,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
 const loginUser = asyncHandler(async (req, res) => {
   //we check through the gmail and the password
-  // here we take both fields from registter user
+  // here we take both fields from register user
   const { userName, password } = req.body;
   // console.log("Request body:", req.body);
   // console.log("Content-Type:", req.get("Content-Type"));

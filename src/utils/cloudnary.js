@@ -1,6 +1,7 @@
 import { v2 as cloudinary } from "cloudinary";
 import { Console, log } from "console";
 import fs from "fs";
+import { Readable } from "stream"; // ES module-compatible import
 
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,

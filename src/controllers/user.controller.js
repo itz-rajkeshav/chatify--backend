@@ -60,69 +60,35 @@ const registerUser = asyncHandler(async (req, res) => {
     );
   }
   // here we all the stuffs regarding imgaes that we take at the time of the register
-//   const avatarLocalPath = req.files?.avatar[0]?.path;
-//   let coverImagePath;
-//   if (
-//     req.files &&
-//     Array.isArray(req.files.coverImage) &&
-//     req.files.coverImage.length > 0
-//   ) {
-//     coverImagePath = req.files.coverImage[0].path;
-//   }
-//   if (!avatarLocalPath) {
-//     throw new ApiError(400, "Avatar file is required");
-//   }
-//   // console.log(req.files);
-//   //here we upload the pic in the cloudinary
-//   const avatar = await uploadOnCloudinary(avatarLocalPath);
-//   const coverImage = await uploadOnCloudinary(coverImagePath);
-//   if (!avatar) {
-//     throw new ApiError(400, "Avatar file is required");
-//   }
-//   // in the format we store in the cloudinary
-//   const user = await User.create({
-//     Name,
-//     avatar: avatar.url,
-//     coverImage: coverImage?.url || "",
-//     gmail,
-//     password,
-//     userName,
-//   });
-//   const createdUser = await User.findById(user._id).select("-password");
-//   if (!createdUser) {
-//     throw new ApiError(500, "Something went wrong while entering the user");
-//   }
-//   return res
-//     .status(201)
-//     .json(new ApiResponse(200, createdUser, "User register successfully "));
-// });
-let avatarLocalPath;
-let coverImagePath;
-
-try {
-  // here we all the stuffs regarding images that we take at the time of the register
-  avatarLocalPath = req.files?.avatar[0]?.path;
-  
-  if (
-    req.files &&
-    Array.isArray(req.files.coverImage) &&
-    req.files.coverImage.length > 0
-  ) {
-    coverImagePath = req.files.coverImage[0].path;
-  }
-  
-  if (!avatarLocalPath) {
+  // const avatarLocalPath = req.files?.avatar[0]?.path;
+  // let coverImagePath;
+  // if (
+  //   req.files &&
+  //   Array.isArray(req.files.coverImage) &&
+  //   req.files.coverImage.length > 0
+  // ) {
+  //   coverImagePath = req.files.coverImage[0].path;
+  // }
+  // if (!avatarLocalPath) {
+  //   throw new ApiError(400, "Avatar file is required");
+  // }
+  // console.log(req.files);
+  //here we upload the pic in the cloudinary
+  if (!req.files?.avatar?.[0]) {
     throw new ApiError(400, "Avatar file is required");
   }
-
-  //here we upload the pic in the cloudinary
-  const avatar = await uploadOnCloudinary(avatarLocalPath);
-  const coverImage = await uploadOnCloudinary(coverImagePath);
+  const avatar = await uploadOnCloudinary(req.files.avatar[0].buffer);
+    if (!avatar) {
+      throw new ApiError(400, "Avatar upload failed");
+    }
+    let coverImage = null;
+    if (req.files?.coverImage?.[0]) {
+      coverImage = await uploadOnCloudinary(req.files.coverImage[0].buffer);
+    }
   
   if (!avatar) {
     throw new ApiError(400, "Avatar file is required");
   }
-
   // in the format we store in the cloudinary
   const user = await User.create({
     Name,
@@ -132,36 +98,14 @@ try {
     password,
     userName,
   });
-
   const createdUser = await User.findById(user._id).select("-password");
   if (!createdUser) {
     throw new ApiError(500, "Something went wrong while entering the user");
   }
-
   return res
     .status(201)
     .json(new ApiResponse(200, createdUser, "User register successfully "));
-
-} catch (error) {
-  // Cleanup temporary files if they exist
-  if (avatarLocalPath) {
-    try {
-      await fs.unlink(avatarLocalPath);
-    } catch (err) {
-      console.error("Error deleting avatar file:", err);
-    }
-  }
-  if (coverImagePath) {
-    try {
-      await fs.unlink(coverImagePath);
-    } catch (err) {
-      console.error("Error deleting cover image file:", err);
-    }
-  }
-  throw error;
-}
 });
-
 
 //after register we check login
 

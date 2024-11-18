@@ -52,23 +52,23 @@ const registerUser = asyncHandler(async (req, res) => {
       `user is already exist with this ${userName} try different username `
     );
   }
-  // here we all the stuffs regarding imgaes that we take at the time of the register
-  const avatarLocalPath = req.files?.avatar[0]?.path;
-  let coverImagePath;
-  if (
-    req.files &&
-    Array.isArray(req.files.coverImage) &&
-    req.files.coverImage.length > 0
-  ) {
-    coverImagePath = req.files.coverImage[0].path;
-  }
-  if (!avatarLocalPath) {
-    throw new ApiError(400, "Avatar file is required");
-  }
+  // here we  do all the stuffs regarding imgaes that we take at the time of the register
+  // const avatarLocalPath = req.files?.avatar[0]?.path;
+  // let coverImagePath;
+  // if (
+  //   req.files &&
+  //   Array.isArray(req.files.coverImage) &&
+  //   req.files.coverImage.length > 0
+  // ) {
+  //   coverImagePath = req.files.coverImage[0].path;
+  // }
+  // if (!avatarLocalPath) {
+  //   throw new ApiError(400, "Avatar file is required");
+  // }
   // console.log(req.files);
   //here we upload the pic in the cloudinary
-  const avatar = await uploadOnCloudinary(avatarLocalPath);
-  const coverImage = await uploadOnCloudinary(coverImagePath);
+  const avatar = await uploadOnCloudinary(req.files?.avatar[0]?.path);
+  const coverImage = await uploadOnCloudinary(req.files.coverImage[0].path);
   if (!avatar) {
     throw new ApiError(400, "Avatar file is required");
   }

@@ -31,6 +31,14 @@ const userSchema = new mongoose.Schema(
       //cloudinary
       type: String,
     },
+    Status:{
+      type:String,
+      default:"Active",
+    },
+    location:{
+      type:String,
+      default:"India",
+    },
     refreshToken: {
       type: String,
     },

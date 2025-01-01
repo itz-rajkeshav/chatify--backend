@@ -10,9 +10,16 @@ import ConvoMemberRoute from "./routes/convo.routes.js";
 import Allconversation from "./routes/allConvo.routes.js";
 import getProfile from "./routes/getProfile.routes.js";
 import getMessage from "./routes/getMessage.routes.js"
+import update_user from "./routes/updateUser.routes.js" 
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import dotenv from 'dotenv';
+import { createReadStream } from "fs";
+import path, { dirname } from "path";
+import { fileURLToPath } from "url";
+import fs from "fs";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 dotenv.config();
 const logger = _logger();
 const app = express();
@@ -44,6 +51,7 @@ app.use("/api/v1/convoMember", ConvoMemberRoute);
 app.use("/api/v1/allConvo", Allconversation);
 app.use("/api/v1/getProfile", getProfile);
 app.use("/api/v1/getMessages",getMessage);
+app.use("/api/v1/updateUser",update_user);
 io.on('connection', (socket) => {
   console.log(`User connected: ${socket.id}`);
   socket.on('sendMessage', (message) => {

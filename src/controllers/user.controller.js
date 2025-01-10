@@ -24,16 +24,6 @@ const generateAccessandRefreshToken = async (userId) => {
     );
   }
 };
-// const ensureUploadDirectory = async () => {
-//   const uploadDir = path.join(process.cwd(), 'public', 'storage');
-//   try {
-//     await fs.access(uploadDir);
-//   } catch (error) {
-//     await fs.mkdir(uploadDir, { recursive: true });
-//   }
-//   return uploadDir;
-// };
-
 // here we add the register
 const registerUser = asyncHandler(async (req, res) => {
   // await ensureUploadDirectory();
@@ -219,5 +209,15 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     throw new ApiError(401, err?.message || "Invalid refresh token");
   }
 });
-
+const changeCurrentPassword=asyncHandler(async (req,res)=>{
+  const {oldPassword , newPassword}=req.body;
+  const user = await User.findById(req.user?.id)
+  const isPasswordCorrect = await user.isPasswordCorrect(oldPassword);
+  if(!isPasswordCorrect){
+    throw new ApiError(400,"Invalid old passowrd");
+  }
+  user.password=newPassword;
+  await user.save({validateBeforeSave:false})
+  return res.status(200).json(new ApiResponse(200,{},"Password changed successfully"))
+})
 export { registerUser, loginUser, loggedOutUser, refreshAccessToken };
